@@ -18,6 +18,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,7 +51,10 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<Employee> getAll() {
-        return employeeRepository.findAll();
+//        return employeeRepository.findAll().stream()
+//                .filter(employee -> employee.getIsDeleted() == Boolean.FALSE)
+//                .collect(Collectors.toList());
+        return employeeRepository.findAllNotDeletedUsers();
     }
 
     @Override
@@ -62,11 +68,10 @@ public class EmployeeServiceBean implements EmployeeService {
     @Override
     public Employee getById(Integer id) {
         var employee = employeeRepository.findById(id)
-                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
                 .orElseThrow(ResourceNotFoundException::new);
-        /* if (employee.getIsDeleted()) {
-            throw new EntityNotFoundException("Employee was deleted with id = " + id);
-        }*/
+
+        checkIfAlreadyDeleted(employee);
+
         return employee;
     }
 
@@ -83,19 +88,22 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
-    public void removeById(Integer id) {
-        //repository.deleteById(id);
+    public Employee removeById(Integer id) {
         var employee = employeeRepository.findById(id)
-                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-                .orElseThrow(ResourceWasDeletedException::new);
-        //employee.setIsDeleted(true);
-        employeeRepository.delete(employee);
-        //repository.save(employee);
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+
+        checkIfAlreadyDeleted(employee);
+
+        employee.setIsDeleted(true);
+        return employeeRepository.save(employee);
     }
 
     @Override
     public void removeAll() {
-        employeeRepository.deleteAll();
+        employeeRepository.findAllNotDeletedUsers().forEach(employee -> {
+            employee.setIsDeleted(true);
+            employeeRepository.save(employee);
+        });
     }
 
     /*@Override
@@ -223,5 +231,9 @@ public class EmployeeServiceBean implements EmployeeService {
         employeeRepository.updateEmployeeByName(name, id);
     }
 
+    private static void checkIfAlreadyDeleted(Employee employee) {
+        if (employee.getIsDeleted())
+            throw new ResourceWasDeletedException();
+    }
 
 }

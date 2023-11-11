@@ -62,6 +62,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query(value = "SELECT * FROM users WHERE country = 'Ukraine'", nativeQuery = true)
     Optional<List<Employee>> findAllUkrainian();
 
+    @Query(value = "SELECT * FROM users WHERE is_deleted = false", nativeQuery = true)
+    List<Employee> findAllNotDeletedUsers();
+
     @Transactional
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "INSERT INTO users(name, email, country, gender) VALUES (:name, :email, :country, :gender)", nativeQuery = true)

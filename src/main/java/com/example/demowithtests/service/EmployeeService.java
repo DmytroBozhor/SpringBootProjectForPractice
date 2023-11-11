@@ -21,7 +21,7 @@ public interface EmployeeService {
 
     Employee updateById(Integer id, Employee plane);
 
-    void removeById(Integer id);
+    Employee removeById(Integer id);
 
     void removeAll();
 
