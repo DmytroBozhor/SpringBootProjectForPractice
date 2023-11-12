@@ -51,9 +51,6 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<Employee> getAll() {
-//        return employeeRepository.findAll().stream()
-//                .filter(employee -> employee.getIsDeleted() == Boolean.FALSE)
-//                .collect(Collectors.toList());
         return employeeRepository.findAllNotDeletedUsers();
     }
 
@@ -67,17 +64,13 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public Employee getById(Integer id) {
-        var employee = employeeRepository.findById(id)
+        return employeeRepository.findByIdAndNotDeleted(id)
                 .orElseThrow(ResourceNotFoundException::new);
-
-        checkIfAlreadyDeleted(employee);
-
-        return employee;
     }
 
     @Override
     public Employee updateById(Integer id, Employee employee) {
-        return employeeRepository.findById(id)
+        return employeeRepository.findByIdAndNotDeleted(id)
                 .map(entity -> {
                     entity.setName(employee.getName());
                     entity.setEmail(employee.getEmail());
@@ -89,21 +82,24 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public Employee removeById(Integer id) {
-        var employee = employeeRepository.findById(id)
+        return employeeRepository.findByIdAndNotDeleted(id)
+                .map(employee -> {
+                    employee.setIsDeleted(true);
+                    return employeeRepository.save(employee);
+                })
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-
-        checkIfAlreadyDeleted(employee);
-
-        employee.setIsDeleted(true);
-        return employeeRepository.save(employee);
     }
 
     @Override
     public void removeAll() {
-        employeeRepository.findAllNotDeletedUsers().forEach(employee -> {
-            employee.setIsDeleted(true);
-            employeeRepository.save(employee);
-        });
+        List<Employee> employeeList = employeeRepository
+                .findAllNotDeletedUsers()
+                .stream()
+                .peek(employee -> {
+                    employee.setIsDeleted(true);
+                })
+                .toList();
+        employeeRepository.saveAll(employeeList);
     }
 
     /*@Override
@@ -230,10 +226,4 @@ public class EmployeeServiceBean implements EmployeeService {
 
         employeeRepository.updateEmployeeByName(name, id);
     }
-
-    private static void checkIfAlreadyDeleted(Employee employee) {
-        if (employee.getIsDeleted())
-            throw new ResourceWasDeletedException();
-    }
-
 }
