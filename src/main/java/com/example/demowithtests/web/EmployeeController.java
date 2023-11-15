@@ -55,17 +55,18 @@ public class EmployeeController {
 
     @PostMapping("/users/jpa")
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee saveEmployee(@RequestBody Employee employee) {
-        log.debug("saveEmployeeWithJpa() - start: employee = {}", employee);
-        Employee saved = employeeServiceEM.createWithJpa(employee);
+    public EmployeeDto saveEmployeeWithJpa(@RequestBody @Valid EmployeeDto requestForSave) {
+        log.debug("saveEmployeeWithJpa() - start: employeeDto = {}", requestForSave);
+        Employee employee = employeeServiceEM.createWithJpa(employeeMapper.toEmployee(requestForSave));
+        EmployeeDto employeeDto = employeeMapper.toEmployeeDto(employee);
         log.debug("saveEmployeeWithJpa() - stop: employee = {}", employee.getId());
-        return saved;
+        return employeeDto;
     }
 
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getAllUsers() {
-        return employeeService.getAll();
+    public List<EmployeeDto> getAllUsers() {
+        return employeeMapper.toListEmployeeDto(employeeService.getAll());
     }
 
     @GetMapping("/users/pages")
@@ -151,8 +152,8 @@ public class EmployeeController {
 
     @GetMapping("/users/countryBy")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getByCountry(@RequestParam(required = true) String country) {
-        return employeeService.filterByCountry(country);
+    public List<EmployeeDto> getByCountry(@RequestParam(required = true) String country) {
+        return employeeMapper.toListEmployeeDto(employeeService.filterByCountry(country));
     }
 
     @PatchMapping("/users/ukrainians")
@@ -163,11 +164,11 @@ public class EmployeeController {
 
     @GetMapping("/users/names")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> findByNameContaining(@RequestParam String employeeName) {
+    public List<EmployeeDto> findByNameContaining(@RequestParam String employeeName) {
         log.debug("findByNameContaining() EmployeeController - start: employeeName = {}", employeeName);
         List<Employee> employees = employeeService.findByNameContaining(employeeName);
         log.debug("findByNameContaining() EmployeeController - end: employees = {}", employees.size());
-        return employees;
+        return employeeMapper.toListEmployeeDto(employees);
     }
 
     @PatchMapping("/users/names/{id}")
@@ -182,8 +183,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public Employee refreshEmployeeNameBody(@PathVariable("id") Integer id, @RequestParam String employeeName) {
         log.debug("refreshEmployeeName() EmployeeController - start: id = {}", id);
-        employeeService.updateEmployeeByName(employeeName, id);
-        Employee employee = employeeService.getById(id);
+        Employee employee = employeeService.updateEmployeeByName(employeeName, id);
         log.debug("refreshEmployeeName() EmployeeController - end: id = {}", id);
         return employee;
     }

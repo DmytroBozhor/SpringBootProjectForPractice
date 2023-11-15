@@ -215,15 +215,14 @@ public class EmployeeServiceBean implements EmployeeService {
      * @return
      */
     @Override
-    public void updateEmployeeByName(String name, Integer id) {
-        /*var employee = employeeRepository.findById(id)
+    public Employee updateEmployeeByName(String name, Integer id) {
+        return employeeRepository.findById(id)
                 .map(entity -> {
                     entity.setName(name);
                     return employeeRepository.save(entity);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-        return employee;*/
 
-        employeeRepository.updateEmployeeByName(name, id);
+//        employeeRepository.updateEmployeeByName(name, id);
     }
 }
