@@ -199,7 +199,7 @@ public class EmployeeController {
         return "employee with name: " + employee.getName() + " saved!";
     }
 
-    @GetMapping("/users/emails")
+    @GetMapping("/users/emails/find")
     @ResponseStatus(HttpStatus.OK)
     public EmployeeEmailDto findByEmail(@RequestParam("email") String email) {
         log.debug("findByEmail() EmployeeController - start: email = {}", email);
