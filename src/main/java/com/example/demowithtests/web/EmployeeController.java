@@ -1,7 +1,9 @@
 package com.example.demowithtests.web;
 
+import ch.qos.logback.core.model.conditional.ElseModel;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.dto.EmployeeEmailDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.service.EmployeeServiceEM;
@@ -190,8 +192,19 @@ public class EmployeeController {
 
     @PostMapping("/employees")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createAndSave(@RequestBody Employee employee) {
-        employeeService.createAndSave(employee);
+    public String createAndSave(@RequestBody @Valid EmployeeDto employeeDto) {
+        log.debug("createAndSave() EmployeeController - start: employeeDto = {}", employeeDto);
+        Employee employee = employeeService.createAndSave(employeeMapper.toEmployee(employeeDto));
+        log.debug("createAndSave() EmployeeController - end: employeeDto = {}", employeeDto);
         return "employee with name: " + employee.getName() + " saved!";
+    }
+
+    @GetMapping("/users/emails")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeEmailDto findByEmail(@RequestParam("email") String email) {
+        log.debug("findByEmail() EmployeeController - start: email = {}", email);
+        EmployeeEmailDto employeeEmailDto = employeeService.findByEmail(email);
+        log.debug("findByEmail() EmployeeController - end: email = {}", email);
+        return employeeEmailDto;
     }
 }

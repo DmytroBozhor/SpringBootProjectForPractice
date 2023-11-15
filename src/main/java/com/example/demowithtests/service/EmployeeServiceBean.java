@@ -1,6 +1,7 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.dto.EmployeeEmailDto;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.service.emailSevice.EmailSenderService;
 import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotations;
@@ -8,6 +9,7 @@ import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
+import com.example.demowithtests.util.mappers.EmployeeMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,6 +33,7 @@ public class EmployeeServiceBean implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmailSenderService emailSenderService;
+    private final EmployeeMapper employeeMapper;
 
 
     @Override
@@ -45,8 +49,8 @@ public class EmployeeServiceBean implements EmployeeService {
      * @return
      */
     @Override
-    public void createAndSave(Employee employee) {
-        employeeRepository.saveEmployee(employee.getName(), employee.getEmail(), employee.getCountry(), String.valueOf(employee.getGender()));
+    public Employee createAndSave(Employee employee) {
+        return employeeRepository.saveEmployee(employee.getName(), employee.getEmail(), employee.getCountry(), String.valueOf(employee.getGender()));
     }
 
     @Override
@@ -224,5 +228,11 @@ public class EmployeeServiceBean implements EmployeeService {
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
 
 //        employeeRepository.updateEmployeeByName(name, id);
+    }
+
+    @Override
+    public EmployeeEmailDto findByEmail(String email) {
+        return employeeRepository.findByEmail(email).map(employeeMapper::toEmployeeEmailDto)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with email = " + email));
     }
 }
