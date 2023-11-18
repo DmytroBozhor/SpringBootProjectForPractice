@@ -8,7 +8,6 @@ import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotatio
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
-import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import com.example.demowithtests.util.mappers.EmployeeMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -20,10 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -234,5 +229,20 @@ public class EmployeeServiceBean implements EmployeeService {
     public EmployeeEmailDto findByEmail(String email) {
         return employeeRepository.findByEmail(email).map(employeeMapper::toEmployeeEmailDto)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with email = " + email));
+    }
+
+    @Override
+    public List<Employee> saveAll(List<Employee> employeeListForSave) {
+        return employeeRepository.saveAll(employeeListForSave);
+    }
+
+    @Override
+    public List<Employee> updateAllNames(List<Employee> employees, String name) {
+
+        List<Employee> updatedEmployees = employees.stream()
+                .peek(employee -> employee.setName(name))
+                .toList();
+
+        return employeeRepository.saveAll(updatedEmployees);
     }
 }

@@ -64,4 +64,7 @@ public interface EmployeeService {
 
     EmployeeEmailDto findByEmail(String email);
 
+    List<Employee> saveAll(List<Employee> employeeListForSave);
+
+    List<Employee> updateAllNames(List<Employee> employees, String name);
 }

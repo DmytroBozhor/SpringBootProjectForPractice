@@ -19,11 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static com.example.demowithtests.util.Endpoints.API_BASE;
 import static com.example.demowithtests.util.Endpoints.USER_ENDPOINT;
@@ -206,5 +206,23 @@ public class EmployeeController {
         EmployeeEmailDto employeeEmailDto = employeeService.findByEmail(email);
         log.debug("findByEmail() EmployeeController - end: email = {}", email);
         return employeeEmailDto;
+    }
+
+    @PutMapping("/users/names/all")
+    @ResponseStatus(HttpStatus.OK)
+    public Integer updateAllNamesWithPut(@RequestBody String name) {
+        log.debug("updateAllNamesWithPut() EmployeeController - start: name = {}", name);
+        List<Employee> employees = employeeService.getAll();
+        log.debug("updateAllNamesWithPut() EmployeeController - end: name = {}", name);
+        return employeeService.updateAllNames(employees, name).size();
+    }
+
+    @PatchMapping("/users/names/all")
+    @ResponseStatus(HttpStatus.OK)
+    public Integer updateAllNamesWithPatch(@RequestBody String name) {
+        log.debug("updateAllNamesWithPatch() EmployeeController - start: name = {}", name);
+        List<Employee> employees = employeeService.getAll();
+        log.debug("updateAllNamesWithPatch() EmployeeController - end: name = {}", name);
+        return employeeService.updateAllNames(employees, name).size();
     }
 }
