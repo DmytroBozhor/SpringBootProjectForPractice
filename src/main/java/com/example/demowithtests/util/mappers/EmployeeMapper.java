@@ -3,6 +3,7 @@ package com.example.demowithtests.util.mappers;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeEmailDto;
+import com.example.demowithtests.dto.EmployeeUpdateDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
 import org.mapstruct.Mapper;
 
@@ -18,6 +19,8 @@ public interface EmployeeMapper {
     List<EmployeeDto> toListEmployeeDto(List<Employee> employees);
 
     Employee toEmployee(EmployeeDto employeeDto);
+
+    Employee toEmployee(EmployeeUpdateDto employeeDto);
 
     EmployeeEmailDto toEmployeeEmailDto(Employee employee);
 }

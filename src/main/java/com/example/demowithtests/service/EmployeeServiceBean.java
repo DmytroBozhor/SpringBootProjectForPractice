@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -77,6 +78,12 @@ public class EmployeeServiceBean implements EmployeeService {
                     return employeeRepository.save(entity);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+    }
+
+    @Override
+    public Employee updateOrSave(Integer id, Employee employee) {
+        employee.setId(id);
+        return employeeRepository.save(employee);
     }
 
     @Override

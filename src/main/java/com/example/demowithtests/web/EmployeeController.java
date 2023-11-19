@@ -1,9 +1,9 @@
 package com.example.demowithtests.web;
 
-import ch.qos.logback.core.model.conditional.ElseModel;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeEmailDto;
+import com.example.demowithtests.dto.EmployeeUpdateDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.service.EmployeeServiceEM;
@@ -19,11 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import static com.example.demowithtests.util.Endpoints.API_BASE;
 import static com.example.demowithtests.util.Endpoints.USER_ENDPOINT;
@@ -224,5 +222,23 @@ public class EmployeeController {
         List<Employee> employees = employeeService.getAll();
         log.debug("updateAllNamesWithPatch() EmployeeController - end: name = {}", name);
         return employeeService.updateAllNames(employees, name).size();
+    }
+
+    @PutMapping("/users/edit/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Employee editUserWithPut(@PathVariable("id") Integer id, @RequestBody @Valid EmployeeDto requestForUpdate) {
+        log.debug("editUserWithPut() EmployeeController - start: requestForUpdate = {}", requestForUpdate);
+        Employee updatedEmployee = employeeMapper.toEmployee(requestForUpdate);
+        log.debug("editUserWithPut() EmployeeController - end: requestForUpdate = {}", requestForUpdate);
+        return employeeService.updateOrSave(id, updatedEmployee);
+    }
+
+    @PatchMapping("/users/edit/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Employee editUserWithPatch(@PathVariable("id") Integer id, @RequestBody EmployeeUpdateDto requestForUpdate) {
+        log.debug("editUserWithPatch() EmployeeController - start: requestForUpdate = {}", requestForUpdate);
+        Employee updatedEmployee = employeeMapper.toEmployee(requestForUpdate);
+        log.debug("editUserWithPatch() EmployeeController - end: requestForUpdate = {}", requestForUpdate);
+        return employeeService.updateById(id, updatedEmployee);
     }
 }

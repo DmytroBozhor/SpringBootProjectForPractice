@@ -12,6 +12,7 @@ import java.util.Set;
 public interface EmployeeService {
 
     Employee create(Employee employee);
+
     Employee createAndSave(Employee employee);
 
     List<Employee> getAll();
@@ -21,6 +22,8 @@ public interface EmployeeService {
     Employee getById(Integer id);
 
     Employee updateById(Integer id, Employee plane);
+
+    Employee updateOrSave(Integer id, Employee employee);
 
     Employee removeById(Integer id);
 
