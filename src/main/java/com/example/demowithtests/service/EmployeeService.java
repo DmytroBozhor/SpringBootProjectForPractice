@@ -70,4 +70,6 @@ public interface EmployeeService {
     List<Employee> saveAll(List<Employee> employeeListForSave);
 
     List<Employee> updateAllNames(List<Employee> employees, String name);
+
+    List<Employee> findByNameStartingWith(String startingChars);
 }

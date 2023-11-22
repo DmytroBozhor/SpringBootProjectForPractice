@@ -241,4 +241,13 @@ public class EmployeeController {
         log.debug("editUserWithPatch() EmployeeController - end: requestForUpdate = {}", requestForUpdate);
         return employeeService.updateById(id, updatedEmployee);
     }
+
+    @GetMapping("/users/find-by-name")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeDto> findByNameStartingWith(@RequestParam("startingChars") String startingChars) {
+        log.debug("findByNameStartingWith() EmployeeController - start: startingChars = {}", startingChars);
+        List<Employee> foundUsers = employeeService.findByNameStartingWith(startingChars);
+        log.debug("findByNameStartingWith() EmployeeController - end: startingChars = {}", startingChars);
+        return employeeMapper.toListEmployeeDto(foundUsers);
+    }
 }
