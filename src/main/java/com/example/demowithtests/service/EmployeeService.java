@@ -72,4 +72,6 @@ public interface EmployeeService {
     List<Employee> updateAllNames(List<Employee> employees, String name);
 
     List<Employee> findByNameStartingWith(String startingChars);
+
+    List<Employee> findByNameEndingWith(String EndingChars);
 }

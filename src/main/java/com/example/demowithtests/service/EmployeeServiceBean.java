@@ -257,4 +257,9 @@ public class EmployeeServiceBean implements EmployeeService {
     public List<Employee> findByNameStartingWith(String startingChars) {
         return employeeRepository.findByNameStartingWith(startingChars);
     }
+
+    @Override
+    public List<Employee> findByNameEndingWith(String endingChars) {
+        return employeeRepository.findByNameEndingWith(endingChars);
+    }
 }

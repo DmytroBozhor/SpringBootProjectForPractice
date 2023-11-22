@@ -250,4 +250,13 @@ public class EmployeeController {
         log.debug("findByNameStartingWith() EmployeeController - end: startingChars = {}", startingChars);
         return employeeMapper.toListEmployeeDto(foundUsers);
     }
+
+    @GetMapping("/users/find/name/ending")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeDto> findByNameEndingWith(@RequestParam("endingChars") String endingChars) {
+        log.debug("findByNameEndingWith() EmployeeController - start: endingChars = {}", endingChars);
+        List<Employee> foundUsers = employeeService.findByNameEndingWith(endingChars);
+        log.debug("findByNameEndingWith() EmployeeController - end: endingChars = {}", endingChars);
+        return employeeMapper.toListEmployeeDto(foundUsers);
+    }
 }

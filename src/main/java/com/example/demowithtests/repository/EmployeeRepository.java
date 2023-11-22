@@ -84,4 +84,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query(value = "select * from users where name like concat(:startingChars, '%')", nativeQuery = true)
     List<Employee> findByNameStartingWith(@Param("startingChars") String startingChars);
 
+    @Query(value = "select e from Employee e where e.name like concat('%', :endingChars)")
+    List<Employee> findByNameEndingWith(@Param("endingChars") String endingChars);
+
 }
