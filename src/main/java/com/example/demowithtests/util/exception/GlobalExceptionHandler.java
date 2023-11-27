@@ -1,5 +1,6 @@
 package com.example.demowithtests.util.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -10,12 +11,13 @@ import org.springframework.web.context.request.WebRequest;
 
 import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.SendFailedException;
+
 import java.util.Date;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler({ResourceNotFoundException.class, RuntimeException.class})
     public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(true));
         /*ErrorDetails errorDetails =
@@ -51,6 +53,24 @@ public class GlobalExceptionHandler {
                 new Date(),
                 "Mail authentication failed. " + ex.getMessage(),
                 request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    protected ResponseEntity<?> handleEmployeeNotFoundException(EmployeeNotFoundException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                "No users found. " + ex.getMessage(),
+                request.getDescription(true));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ResponseEntity<?> handleEntityNotFoundException(EmployeeNotFoundException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                "No entities found. " + ex.getMessage(),
+                request.getDescription(true));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 

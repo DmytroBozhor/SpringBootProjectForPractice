@@ -7,6 +7,7 @@ import com.example.demowithtests.service.emailSevice.EmailSenderService;
 import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotations;
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
+import com.example.demowithtests.util.exception.EmployeeNotFoundException;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.mappers.EmployeeMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -255,11 +255,21 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<Employee> findByNameStartingWith(String startingChars) {
-        return employeeRepository.findByNameStartingWith(startingChars);
+        List<Employee> employees = employeeRepository.findByNameStartingWith(startingChars);
+
+        if (employees.isEmpty())
+            throw new EmployeeNotFoundException();
+
+        return employees;
     }
 
     @Override
     public List<Employee> findByNameEndingWith(String endingChars) {
-        return employeeRepository.findByNameEndingWith(endingChars);
+        List<Employee> employees = employeeRepository.findByNameEndingWith(endingChars);
+
+        if (employees.isEmpty())
+            throw new EmployeeNotFoundException();
+
+        return employees;
     }
 }

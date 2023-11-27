@@ -71,7 +71,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Transactional
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = "INSERT INTO users(name, email, country, gender) VALUES (:name, :email, :country, :gender)", nativeQuery = true)
-    //Integer saveEmployee(String name, String email, String country, String gender);
+        //Integer saveEmployee(String name, String email, String country, String gender);
     Employee saveEmployee(String name, String email, String country, String gender);
 
     @Transactional
@@ -87,4 +87,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query(value = "select e from Employee e where e.name like concat('%', :endingChars)")
     List<Employee> findByNameEndingWith(@Param("endingChars") String endingChars);
 
+    @Override
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Transactional
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, value = "user_entity-graph")
+    <S extends Employee> S save(S entity);
 }
