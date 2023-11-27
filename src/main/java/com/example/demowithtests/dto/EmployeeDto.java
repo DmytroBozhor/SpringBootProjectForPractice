@@ -2,6 +2,7 @@ package com.example.demowithtests.dto;
 
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.util.annotations.dto.BlockedEmailDomains;
+import com.example.demowithtests.util.annotations.dto.NameWithNoFigures;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public record EmployeeDto(
@@ -21,6 +23,7 @@ public record EmployeeDto(
 
         @NotNull
         @Size(min = 2, max = 32, message = "Name must be between 2 and 32 characters long")
+        @NameWithNoFigures()
         @Schema(description = "Name of an employee.", example = "Billy", requiredMode = Schema.RequiredMode.REQUIRED)
         String name,
 
