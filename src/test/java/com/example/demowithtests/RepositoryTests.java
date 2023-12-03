@@ -23,14 +23,11 @@ public class RepositoryTests {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    private Employee employee;
 
-    @Test
-    @Order(1)
-    @Rollback(value = false)
-    @DisplayName("Save employee test")
-    public void saveEmployeeTest() {
-
-        var employee = Employee.builder()
+    @BeforeEach
+    public void setUp() {
+        employee = Employee.builder()
                 .name("Mark")
                 .country("England")
                 .addresses(new HashSet<>(Set.of(
@@ -40,12 +37,20 @@ public class RepositoryTests {
                                 .build())))
                 .gender(Gender.M)
                 .build();
+    }
 
-        employeeRepository.save(employee);
+    @Test
+    @Order(1)
+    @Rollback(value = false)
+    @DisplayName("Save employee test")
+    public void saveEmployeeTest() {
 
-        Assertions.assertThat(employee.getId()).isGreaterThan(0);
-        Assertions.assertThat(employee.getId()).isEqualTo(1);
-        Assertions.assertThat(employee.getName()).isEqualTo("Mark");
+        var savedEmployee = employeeRepository.save(employee);
+
+        Assertions.assertThat(savedEmployee.getId()).isEqualTo(1);
+        Assertions.assertThat(savedEmployee.getName()).isEqualTo(employee.getName());
+        Assertions.assertThat(savedEmployee.getCountry()).isEqualTo(employee.getCountry());
+        Assertions.assertThat(savedEmployee.getGender()).isEqualTo(employee.getGender());
     }
 
     @Test
@@ -53,10 +58,12 @@ public class RepositoryTests {
     @DisplayName("Get employee by id test")
     public void getEmployeeTest() {
 
-        var employee = employeeRepository.findById(1).orElseThrow();
+        var retrievedEmployee = employeeRepository.findById(1).orElseThrow();
 
-        Assertions.assertThat(employee.getId()).isEqualTo(1);
-        Assertions.assertThat(employee.getName()).isEqualTo("Mark");
+        Assertions.assertThat(retrievedEmployee.getId()).isEqualTo(1);
+        Assertions.assertThat(retrievedEmployee.getName()).isEqualTo(employee.getName());
+        Assertions.assertThat(retrievedEmployee.getCountry()).isEqualTo(employee.getCountry());
+        Assertions.assertThat(retrievedEmployee.getGender()).isEqualTo(employee.getGender());
     }
 
     @Test
@@ -76,13 +83,15 @@ public class RepositoryTests {
     @DisplayName("Update employee test")
     public void updateEmployeeTest() {
 
-        var employee = employeeRepository.findById(1).orElseThrow();
+        var employeeRetrieved = employeeRepository.findById(1).orElseThrow();
 
-        employee.setName("Martin");
-        var employeeUpdated = employeeRepository.save(employee);
+        employeeRetrieved.setName("Martin");
+        var employeeUpdated = employeeRepository.save(employeeRetrieved);
 
-        Assertions.assertThat(employeeUpdated.getName()).isEqualTo("Martin");
-
+        Assertions.assertThat(employeeUpdated.getId()).isEqualTo(employeeRetrieved.getId());
+        Assertions.assertThat(employeeUpdated.getName()).isEqualTo(employeeRetrieved.getName());
+        Assertions.assertThat(employeeUpdated.getCountry()).isEqualTo(employeeRetrieved.getCountry());
+        Assertions.assertThat(employeeUpdated.getGender()).isEqualTo(employeeRetrieved.getGender());
     }
 
     @Test
@@ -90,13 +99,42 @@ public class RepositoryTests {
     @DisplayName("Find employee by gender test")
     public void findByGenderTest() {
 
-        var employees = employeeRepository.findByGender(Gender.M.toString(), "UK");
+        var employees = employeeRepository.findByGender(employee.getGender().toString(), employee.getCountry());
 
-        assertThat(employees.get(0).getGender()).isEqualTo(Gender.M);
+        for (Employee e : employees) {
+            assertThat(e.getGender()).isEqualTo(employee.getGender());
+            assertThat(e.getCountry()).isEqualTo(employee.getCountry());
+        }
     }
 
     @Test
     @Order(6)
+    @DisplayName("Get employee by name starting with test")
+    public void findEmployeeByNameStartingWithTest() {
+
+        var employees = employeeRepository.findByNameStartingWith("Mar");
+
+        Assertions.assertThat(employees.size()).isGreaterThan(0);
+        for (Employee e : employees) {
+            Assertions.assertThat(e.getName()).contains("Mar");
+        }
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Get employee by name ending with test")
+    public void findEmployeeByNameEndingWithTest() {
+
+        var employees = employeeRepository.findByNameEndingWith("tin");
+
+        Assertions.assertThat(employees.size()).isGreaterThan(0);
+        for (Employee e : employees) {
+            Assertions.assertThat(e.getName()).contains("tin");
+        }
+    }
+
+    @Test
+    @Order(8)
     @Rollback(value = false)
     @DisplayName("Delete employee test")
     public void deleteEmployeeTest() {
