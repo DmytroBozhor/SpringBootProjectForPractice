@@ -53,7 +53,10 @@ public class ServiceTests {
 
         when(employeeRepository.save(ArgumentMatchers.any(Employee.class))).thenReturn(employee);
         var created = service.create(employee);
-        assertThat(created.getName()).isSameAs(employee.getName());
+        assertThat(created.getName()).isEqualTo(employee.getName());
+        assertThat(created.getCountry()).isEqualTo(employee.getCountry());
+        assertThat(created.getEmail()).isEqualTo(employee.getEmail());
+        assertThat(created.getGender()).isEqualTo(employee.getGender());
         verify(employeeRepository).save(employee);
     }
 
@@ -64,7 +67,7 @@ public class ServiceTests {
         Employee employee = new Employee();
         employee.setId(88);
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
-        Employee expected = service.getById(employee.getId());
+        Employee expected = service.findById(employee.getId());
         assertThat(expected).isSameAs(employee);
         verify(employeeRepository).findById(employee.getId());
     }
@@ -82,7 +85,7 @@ public class ServiceTests {
     public void readEmployeeByIdTest() {
 
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
-        Employee expected = service.getById(employee.getId());
+        Employee expected = service.findById(employee.getId());
         assertThat(expected).isSameAs(employee);
         verify(employeeRepository).findById(employee.getId());
     }
@@ -102,7 +105,7 @@ public class ServiceTests {
     public void deleteEmployeeTest() {
 
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
-        service.removeById(employee.getId());
+        service.removeByIdCompletely(employee.getId());
         verify(employeeRepository).delete(employee);
     }
 }

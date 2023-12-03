@@ -69,6 +69,12 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     @Override
+    public Employee findById(Integer id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
     public Employee updateById(Integer id, Employee employee) {
         return employeeRepository.findByIdAndNotDeleted(id)
                 .map(entity -> {
@@ -94,6 +100,13 @@ public class EmployeeServiceBean implements EmployeeService {
                     return employeeRepository.save(employee);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+    }
+
+    @Override
+    public void removeByIdCompletely(Integer id) {
+        var employee = employeeRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+        employeeRepository.delete(employee);
     }
 
     @Override

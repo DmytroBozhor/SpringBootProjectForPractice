@@ -74,4 +74,8 @@ public interface EmployeeService {
     List<Employee> findByNameStartingWith(String startingChars);
 
     List<Employee> findByNameEndingWith(String EndingChars);
+
+    Employee findById(Integer id);
+
+    void removeByIdCompletely(Integer id);
 }

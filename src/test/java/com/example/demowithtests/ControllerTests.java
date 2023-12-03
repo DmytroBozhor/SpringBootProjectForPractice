@@ -177,7 +177,7 @@ public class ControllerTests {
     @WithMockUser(roles = "ADMIN")
     public void deletePassTest() throws Exception {
 
-        doNothing().when(service).removeById(1);
+        doNothing().when(service).removeByIdCompletely(1);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
                 .delete("/api/users/1")
@@ -186,7 +186,7 @@ public class ControllerTests {
         mockMvc.perform(mockRequest)
                 .andExpect(status().isNoContent());
 
-        verify(service).removeById(1);
+        verify(service).removeByIdCompletely(1);
     }
 
     @Test
