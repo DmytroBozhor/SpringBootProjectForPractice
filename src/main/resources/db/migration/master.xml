@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="ddima (generated)" id="1702050962722-2">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" startWith="54858" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="gender" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="false" name="is_deleted" type="BOOLEAN"/>
+            <column name="document_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ddima (generated)" id="1702050962722-3">
+        <createTable tableName="addresses">
+            <column autoIncrement="true" name="id" startWith="109714" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="addresses_pkey"/>
+            </column>
+            <column defaultValueBoolean="false" name="address_has_active" type="BOOLEAN"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="employee_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ddima (generated)" id="1702050962722-4">
+        <createTable tableName="documents">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="documents_pkey"/>
+            </column>
+            <column name="expire_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="is_handled" type="BOOLEAN"/>
+            <column name="number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ddima (generated)" id="1702050962722-6">
+        <addUniqueConstraint columnNames="document_id" constraintName="uk_tepomggh6kkrlbno36941a56t" tableName="users"/>
+    </changeSet>
+    <changeSet author="ddima (generated)" id="1702050962722-7">
+        <addUniqueConstraint columnNames="number" constraintName="uk_mv3dcvi62q8h75v10t0n42k3h" tableName="documents"/>
+    </changeSet>
+    <changeSet author="ddima (generated)" id="1702050962722-8">
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="users" constraintName="fk6ldxnk9bect3om92ye33mpp0i" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="documents" validate="true"/>
+    </changeSet>
+    <changeSet author="ddima (generated)" id="1702050962722-9">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="addresses" constraintName="fk_address_employee" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
