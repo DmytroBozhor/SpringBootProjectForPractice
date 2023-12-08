@@ -8,12 +8,12 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/employee
+    url: jdbc:postgresql://localhost:5432/employee
     # For dockerization
-    url: jdbc:postgresql://db:5432/employee
+#    url: jdbc:postgresql://db:5432/employee
     username: postgres
-#    password: 1
-    password: postgres
+    password: 1
+#    password: postgres
   # JPA properties
   jpa:
     hibernate:
@@ -37,9 +37,10 @@ logging:
   pattern:
     console: "%d %-5level %logger : %msg%n"
   level:
-    org.springframework: info
-    #org.hibernate: debug
+    org.springframework: debug
+    org.hibernate: debug
     com.example.demowithtests: debug
+    org.flywaydb: debug
 # Server configuration
 server:
   port: 8089 #set your port
