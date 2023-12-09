@@ -1,5 +1,6 @@
 package com.example.demowithtests.service;
 
+import com.example.demowithtests.domain.Document;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeEmailDto;
 import com.example.demowithtests.repository.EmployeeRepository;
@@ -285,4 +286,15 @@ public class EmployeeServiceBean implements EmployeeService {
 
         return employees;
     }
+
+    @Override
+    public Employee setDocument(Integer id, Document document) {
+        return employeeRepository.findById(id)
+                .map(entity -> {
+                    entity.setDocument(document);
+                    return employeeRepository.save(entity);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+    }
+
 }

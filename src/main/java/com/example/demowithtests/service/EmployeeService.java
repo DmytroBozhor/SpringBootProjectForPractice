@@ -1,5 +1,6 @@
 package com.example.demowithtests.service;
 
+import com.example.demowithtests.domain.Document;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeEmailDto;
 import org.springframework.data.domain.Page;
@@ -78,4 +79,6 @@ public interface EmployeeService {
     Employee findById(Integer id);
 
     void removeByIdCompletely(Integer id);
+
+    Employee setDocument(Integer id, Document document);
 }
