@@ -81,4 +81,6 @@ public interface EmployeeService {
     void removeByIdCompletely(Integer id);
 
     Employee setDocument(Integer id, Document document);
+
+    Employee removeDocument(Integer id);
 }

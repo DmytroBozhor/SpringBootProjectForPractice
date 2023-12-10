@@ -2,6 +2,7 @@ package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Document;
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.History;
 import com.example.demowithtests.dto.*;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.service.EmployeeServiceEM;
@@ -274,10 +275,10 @@ public class EmployeeController {
 
     @PatchMapping("/users/edit/{id}/remove-document")
     @ResponseStatus(HttpStatus.OK)
-    public Employee removeDocumentFromUser(@PathVariable("id") Integer id) {
-        log.debug("removeDocumentFromUser() EmployeeController - start: id = {}", id);
-        Employee employee = employeeService.setDocument(id, null);
-        log.debug("removeDocumentFromUser() EmployeeController - end: id = {}", id);
+    public Employee removeDocumentFromUser(@PathVariable("id") Integer personId) {
+        log.debug("removeDocumentFromUser() EmployeeController - start: id = {}", personId);
+        Employee employee = employeeService.removeDocument(personId);
+        log.debug("removeDocumentFromUser() EmployeeController - end: id = {}", personId);
         return employee;
     }
 
