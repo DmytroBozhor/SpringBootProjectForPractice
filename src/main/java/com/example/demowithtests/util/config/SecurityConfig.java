@@ -1,26 +1,39 @@
 package com.example.demowithtests.util.config;
 
+import com.example.demowithtests.service.user.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
+
 @Configuration
+@AllArgsConstructor
 public class SecurityConfig {
+
+    private final UserService userService;
 
     //TODO: 30-July-23 Create 2 users for demo
     @Bean
     public UserDetailsService userDetailsService() {
 
-        var userOne = User.withUsername("user").password("{noop}password").roles("USER").build();
-        var userTwo = User.withUsername("admin").password("{noop}password").roles("USER", "ADMIN").build();
-        return new InMemoryUserDetailsManager(userOne, userTwo);
+        List<com.example.demowithtests.domain.User> userList = userService.findAll();
+        List<UserDetails> userDetailsList = userList.stream()
+                .map(user -> User
+                        .withUsername(user.getName())
+                        .password(user.getPassword())
+                        .roles(user.getRole().toString())
+                        .build()).toList();
+
+        return new InMemoryUserDetailsManager(userDetailsList);
     }
 
     // TODO: 30-July-23 Secure the endpoints with HTTP Basic authentication
@@ -39,7 +52,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
-                        .anyRequest().permitAll()
+                                .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
