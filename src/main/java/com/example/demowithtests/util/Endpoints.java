@@ -8,4 +8,12 @@ public interface Endpoints {
 
     String API_BASE = "/api";
 
+    String API_USERS_ALL = "/api/users/**";
+
+    String API_USERS = "/api/users";
+
+    String API_EMPLOYEES = "/api/employees";
+
+    String API_USERS_JPA = "/api/users/jpa";
+
 }

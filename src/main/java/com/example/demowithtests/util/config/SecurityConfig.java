@@ -1,9 +1,12 @@
 package com.example.demowithtests.util.config;
 
+import com.example.demowithtests.domain.Role;
 import com.example.demowithtests.service.user.UserService;
+import com.example.demowithtests.util.Endpoints;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -45,14 +48,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("USER")
-//                        .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
-//                        .requestMatchers(HttpMethod.POST, "/api/employees").hasRole("ADMIN")
-//                        .requestMatchers(HttpMethod.POST, "/api/users/jpa").hasRole("USER")
-//                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("ADMIN")
-//                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("ADMIN")
-//                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
-                                .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, Endpoints.API_USERS_JPA).hasRole(Role.USER.toString())
+                        .requestMatchers(HttpMethod.POST, Endpoints.API_USERS).hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.POST, Endpoints.API_EMPLOYEES).hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.GET, Endpoints.API_USERS_ALL).hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.PUT, Endpoints.API_USERS_ALL).hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.PATCH, Endpoints.API_USERS_ALL).hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.DELETE, Endpoints.API_USERS_ALL).hasRole(Role.ADMIN.toString())
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
